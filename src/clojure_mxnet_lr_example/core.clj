@@ -10,7 +10,6 @@
             [org.apache.clojure-mxnet.optimizer :as optimizer]
             [org.apache.clojure-mxnet.context :as context]))
 
-
 ;; MXNet Linear Regression Example
 
 ;; Generate data and labels with the form
@@ -18,8 +17,8 @@
 ;; a = 2.0
 ;; b = 1.0
 ;; c = 0.0 (no bias)
-(def num-inputs 2) ;; x and y
-(def num-outputs 1) ;; z
+(def num-inputs 2) ;; x and y  <- the "data"
+(def num-outputs 1) ;; z <- the "label"
 
 (defn rand-range [n min max]
   (repeatedly n #(+ min (rand (- max min)))))
@@ -179,21 +178,3 @@
     (println "Compare results:")
     (doseq [[x y] (map vector output-labels output-labels1)]
       (println "fit label:" x "myfit label:" y))))
-
-
-;; Generate the data with the Symbol API
-(defn linear-model []
-  (let [x (sym/variable "x")
-        y (sym/variable "y")
-        z (sym/+ (sym/* x 2.0) y)
-        x-array (random/uniform -3 3 [1 2])
-        y-array (random/uniform -3 3 [1 2])]
-    (println (ndarray/->vec x-array))
-    (println (ndarray/->vec y-array))
-    (-> z
-        (sym/bind {"x" x-array "y" y-array})
-        executor/forward
-        executor/outputs
-        first
-        ndarray/->vec)
-    x-array))
